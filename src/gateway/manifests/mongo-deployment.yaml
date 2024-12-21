@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-deployment
+  labels:
+    app: mongodb
+spec:
+  replicas: 1 # Bạn có thể điều chỉnh số lượng replica tùy theo nhu cầu
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:latest # Sử dụng image mongo chính thức, có thể chọn version cụ thể
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongodb-data
+          mountPath: /data/db # Đường dẫn mặc định lưu trữ data của MongoDB
+      volumes:
+      - name: mongodb-data
+        persistentVolumeClaim:
+          claimName: mongodb-pvc # Tạo PersistentVolumeClaim (xem bên dưới)
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce # Chỉ cho phép 1 node ghi vào
+  resources:
+    requests:
+      storage: 1Gi # Yêu cầu dung lượng lưu trữ, điều chỉnh tùy theo nhu cầu

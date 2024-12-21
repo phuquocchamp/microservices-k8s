@@ -1,0 +1,11 @@
+astroid
+isort
+jedi
+lazy-object-proxy
+mccabe
+parso
+pika
+platformdirs
+pylint
+toml
+wrapt
